@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage Money</title>
+<link href="/static/vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+<link href="/static/app/css/main.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="bs-header">
+    <div class="container">
+        <h1>Manage Money</h1>
+        <p>Manage your money and riches with this backbone app</p>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div id="coreCont" class="">
+        </div>
+    </div>
+</div>
+
+<script type="text/template" id="tplAllMoney">
+    <p class="text-center"><a href="#items/new" class="btn btn-lg btn-outline">Add Rich</a></p>
+    <ul id="moneyCont" class="money_list">
+        <li class="first">
+            <div class="time">交易时间</div>
+            <div class="type">类型</div>
+            <div class="amount">金额</div>
+            <div class="gain">收益</div>
+            <div class="op">操作</div>
+        </li>
+    </ul>
+    <ul class="money_list money_list_ft">
+        <li class="first">
+            <div class="time"></div>
+            <div class="type"></div>
+            <div id="totalAmount" class="amount">{%- totalAmount %}</div>
+            <div id="totalGain" class="gain">{%- totalGain %}</div>
+            <div class="op"></div>
+        </li>
+    </ul>
+</script>
+
+<!-- single item -->
+<script type="text/template" id="tplSingleMoney">
+    <div class="time">{%- time %}</div>
+    <div class="type">{%- type %}</div>
+    <div class="amount">{%- amount %}</div>
+    <div class="gain">{%- gain %}</div>
+    <div class="op">
+        <a href="#items/edit/{%- id %}" class="editItem">编辑</a>
+        <a href="#items/delete/{%- id %}" class="deleteItem">删除</a>
+    </div>
+</script>
+
+<script type="text/template" id="tplNewItem">
+    <h2 class="page-header text-center">{%= isNew ? 'Create' : 'Edit' %} Money</h2>
+    <form role="form" class="form-horizontal contract-form">
+        <div class="form-group">
+            <label class="col-sm-4 control-label">时间:</label>
+            <div class="col-sm-6">
+                <input type="date" class="form-control inputTime" value="{%- time %}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">类型:</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control inputType" value="{%- type %}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">金额:</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control inputAmount" value="{%- amount %}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">收益:</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control inputGain" value="{%- gain %}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-3">
+                <button type="submit" class="btn btn-outline btn-lg btn-block">提交</button>
+            </div>
+            <div class="col-sm-3">
+                <a href="#items" class="btn btn-outline btn-lg btn-block">取消</a>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script src="/static/vendor/jquery/jquery.js"></script>
+<script src="/static/vendor/underscore/underscore.js"></script>
+<script src="/static/vendor/backbone/backbone.js"></script>
+<script src="/static/vendor/backbone/backbone.localStorage.js"></script>
+
+<script src="/static/app/js/app.js"></script>
+<script src="/static/app/js/models/item.js"></script>
+<script src="/static/app/js/collections/items.js"></script>
+<script src="/static/app/js/views/item.js"></script>
+<script src="/static/app/js/views/items.js"></script>
+<script src="/static/app/js/views/itemForm.js"></script>
+
+<script>
+$(function() {
+    AlexMoney.start({
+        defaults: [ {
+            type: '基金'
+            ,time: '2015-03-05'
+            ,amount: 20000
+            ,gain: 2300
+            ,id:1
+        }
+        , {
+            type: '股票'
+            ,time: '2015-03-03'
+            ,amount: 50000
+            ,gain: 6300
+            ,id:2
+        }]
+    });
+});
+</script>
+</body>
+</html>
