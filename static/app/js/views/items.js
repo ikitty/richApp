@@ -1,6 +1,9 @@
 AlexMoney.Views.Items = Backbone.View.extend({
     template: _.template($('#tplAllMoney').html()),
 
+    initialize: function () {
+        //this.listenTo(this.collection, 'reset', this.render);
+    },
     renderOne: function(model) {
         var itemView = new AlexMoney.Views.Item({model: model});
         //hard code?

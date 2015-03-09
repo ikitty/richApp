@@ -16,8 +16,8 @@ render = render_mako(
 
 urls = (
     '/', 'Index',
-    '/rich/', 'Rich',
-    '/rich/\d+', 'Rich',
+    #'/rich/', 'Rich',
+    '/rich/(\d+)?', 'Rich',
 )
 
 class Index:
@@ -28,7 +28,7 @@ class Index:
 
 class Rich:
     #如果urls中有匹配字符，这里必须写形参。否则会报错
-    def GET(self):
+    def GET(self, id):
         ret = []
         d = DB.get_all()
         for item in d:
@@ -36,16 +36,14 @@ class Rich:
 
         return json.dumps(ret)
 
-    def POST(self):
+    def POST(self, id):
         data = web.data()
         d = json.loads(data)
         DB.create(**d)
-        return {'s': 'ok'}
+        return 'success'
 
     def DELETE(self, id):
-        #todo
         DB.delete(id)
-        return {'del': 'ok'}
 
 if __name__ == "__main__":
     app = web.application(urls, globals())

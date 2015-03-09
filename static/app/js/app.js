@@ -24,15 +24,16 @@ window.AlexMoney = {
             success: function (c) {
                 console.log('fetch ok');
                 if (C.isEmpty()) {
-                    console.log('c is empty then create test data');
-                    this.createTestData();
+                    console.log('C is empty then create test data');
+                    _this.createTestData();
                 }
             },
             error: function () {
                 console.log('fetch err, then create test data');
-                this.createTestData();
+                _this.createTestData();
             }
         });
+        this.createTestData();
 
         router.on('route:home', function () {
             router.navigate('items', {
@@ -115,6 +116,7 @@ window.AlexMoney = {
             this.C.create(model, {
                 success: function () {
                     console.log('created ok');
+                    console.log(arguments);
                 },
                 error: function () {
                     console.log('create data error');

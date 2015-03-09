@@ -11,7 +11,6 @@ AlexMoney.Views.Item = Backbone.View.extend({
     },
 
     render: function() {
-        console.log('ret: ', this.model.toJSON() );
         var html = this.template(this.model.toJSON());
         this.$el.append(html);
         return this;
