@@ -3,7 +3,7 @@
 
 import sqlite3
 
-dbname = 'app2.db'
+dbname = 'app.db'
 tname = 'rich'
 
 con = sqlite3.connect(dbname)

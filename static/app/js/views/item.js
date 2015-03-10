@@ -7,7 +7,8 @@ AlexMoney.Views.Item = Backbone.View.extend({
     },
 
     initialize: function() {
-        this.listenTo(this.model, 'remove', this.remove);
+        //为什么这里监听remove事件也可以呢，model没有该事件啊
+        this.listenTo(this.model, 'destroy', this.remove);
     },
 
     render: function() {
@@ -19,6 +20,16 @@ AlexMoney.Views.Item = Backbone.View.extend({
     onClickDelete: function(e) {
         e.preventDefault();
         //this.model.collection.remove(this.model);
-        this.model.destroy();
+        //和save一样，传入waittrue配置
+        this.model.destroy({
+            wait:true
+            ,success:function () {
+                console.log('del ok') ;
+            }
+            ,error: function () {
+                console.log('del err') ;
+            }
+
+        });
     }
 });

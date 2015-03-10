@@ -1,3 +1,9 @@
+/**
+ * app.js
+ *
+ * @description core js of app
+ **/
+
 //set template syntax
 _.templateSettings = {  
     evaluate : /\{%([\s\S]+?)\%\}/g,  
@@ -18,22 +24,44 @@ window.AlexMoney = {
             ,router = new this.Router()
             ,C = new AlexMoney.Collections.Items()
             ; 
+        var createTestDataInner =  function () {
+            _.each([{
+                    "type": 'JiJin'
+                    ,"time": '2015-03-05'
+                    ,"amount": 10000
+                    ,"gain": 1600
+                }
+                ,{
+                    "type": 'JiJin'
+                    ,"time": '2015-03-05'
+                    ,"amount": 10000
+                    ,"gain": 1700
+                }
+            ], function (model) {
+                C.create(model, {
+                    success: function () {
+                        console.log('create ok') ;
+                    },
+                    error: function () {
+                        console.log('create err') ;
+                    }
+                } );
+            }, this);
+        };
 
         this.C = C ;
         C.fetch({
             success: function (c) {
-                console.log('fetch ok');
+                console.log('fetch OK');
                 if (C.isEmpty()) {
-                    console.log('C is empty then create test data');
-                    _this.createTestData();
+                    console.log('fetch data is empty , Create test data');
+                    createTestDataInner();
                 }
             },
             error: function () {
-                console.log('fetch err, then create test data');
-                _this.createTestData();
+                console.log('fetch err, Create test data');
             }
         });
-        this.createTestData();
 
         router.on('route:home', function () {
             router.navigate('items', {
@@ -46,12 +74,16 @@ window.AlexMoney = {
             //todo : how to handle async
             setTimeout(function () {
                 
+            console.log('show data') ;
+            _.each(C.models, function (item) {
+                console.log(item.attributes) ;
+            })
             var itemsView = new _this.Views.Items({
                 collection: C
             });
-
             $('#coreCont').html(itemsView.render().$el);
-            }, 500);
+
+            }, 1000);
         });
 
         router.on('route:newItem', function () {
@@ -63,8 +95,16 @@ window.AlexMoney = {
                 //attrs.id = items.isEmpty() ? 1 : (_.max(items.pluck('id')) + 1);
                 //items.add(attrs);
 
-                attrs.id = _.max(C.pluck('id')) + 1 ;
-                C.create(attrs);
+                //create does not need id
+                //attrs.id = _.max(C.pluck('id')) + 1 ;
+                C.create(attrs ,{
+                    success: function () {
+                        console.log('new item c ok') ;
+                    },
+                    error:function () {
+                        console.log('new item c err') ;
+                    }
+                });
                 router.navigate('items', true);
             });
 
@@ -82,7 +122,11 @@ window.AlexMoney = {
 
                 itemForm.on('form:submitted', function (attrs) {
                     //item.set(attrs);
-                    item.save(attrs);
+                    //如果没有wait，会直接修改本地模型
+                    //加了waitture，一定要等到服务端返回的数据模型，才会更新本地数据
+                    item.save(attrs, {
+                        wait: true
+                    });
                     router.navigate('items', true);
                 });
 
@@ -101,25 +145,24 @@ window.AlexMoney = {
 
     ,createTestData: function () {
         _.each([{
-                type: '基金'
-                ,time: '2015-03-05'
-                ,amount: 20000
-                ,gain: 2600
+                "type": 'JiJin'
+                ,"time": '2015-03-05'
+                ,"amount": 10000
+                ,"gain": 1600
             }
             ,{
-                type: '股票'
-                ,time: '2015-03-03'
-                ,amount: 50000
-                ,gain: 6300
+                "type": 'JiJin'
+                ,"time": '2015-03-05'
+                ,"amount": 10000
+                ,"gain": 1700
             }
         ], function (model) {
             this.C.create(model, {
                 success: function () {
-                    console.log('created ok');
-                    console.log(arguments);
+                    console.log('create ok') ;
                 },
                 error: function () {
-                    console.log('create data error');
+                    console.log('create err') ;
                 }
             } );
         }, this);

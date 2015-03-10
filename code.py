@@ -27,6 +27,14 @@ class Index:
 
 
 class Rich:
+    def POST(self, id):
+        data = web.data()
+        d = json.loads(data)
+        row_id = DB.create(**d)
+
+        d = DB.get_by_id(row_id)
+        return json.dumps(d)
+
     #如果urls中有匹配字符，这里必须写形参。否则会报错
     def GET(self, id):
         ret = []
@@ -36,14 +44,22 @@ class Rich:
 
         return json.dumps(ret)
 
-    def POST(self, id):
+    def PUT(self, id):
         data = web.data()
         d = json.loads(data)
-        DB.create(**d)
-        return 'success'
+        DB.update(**d)
+
+        #使用jsonLoads之后才能正常访问,要使用d['name']的形式访问d.name是无法访问
+        ret = DB.get_by_id(d['id'])
+        return json.dumps(d)
 
     def DELETE(self, id):
         DB.delete(id)
+        ret = {
+            "status":"ok"
+        }
+        #根据测试，这里随便返回一个json都可以
+        return json.dumps(ret)
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
