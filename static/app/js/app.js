@@ -54,14 +54,14 @@ window.AlexMoney = {
             //reset all models ，and will trigger reset evt
             //reset:true,
             success: function (c) {
-                console.log('fetch OK');
+                console.log('fetch all data OK');
                 if (C.isEmpty()) {
                     console.log('fetch data is empty , Create test data');
                     createTestDataInner();
                 }
             },
             error: function () {
-                console.log('fetch err, Create test data');
+                console.log('fetch err');
             }
         });
 
@@ -73,7 +73,6 @@ window.AlexMoney = {
         });
 
         router.on('route:showItems', function () {
-            console.log('show home data') ;
             var itemsView = new _this.Views.Items({
                 collection: C
             });
@@ -91,8 +90,6 @@ window.AlexMoney = {
 
                 //create does not need id
                 //attrs.id = _.max(C.pluck('id')) + 1 ;
-                //  需要刷新，数据更新问题todo
-                //
                 C.create(attrs ,{
                     wait:true,
                     success: function () {
@@ -113,24 +110,31 @@ window.AlexMoney = {
                 itemForm;
 
             if (item) {
-                itemForm = new _this.Views.ItemForm({
-                    model: item
+                //get data from serve
+                item.fetch({
+                    reset: true,
+                    success: function (model, res) {
+                        console.log('fetch model ok');
+                        itemForm = new _this.Views.ItemForm({
+                            model: item
+                        });
+                        itemForm.on('form:submitted', function (attrs) {
+                            //如果没有wait，会直接修改本地模型
+                            //加了waitture，一定要等到服务端返回的数据模型，才会更新本地数据
+                            item.save(attrs, {
+                                wait: true
+                                ,success: function () {
+                                    console.log('edit OK');
+                                    router.navigate('items', true);
+                                }
+                            });
+                        });
+                        $('#coreCont').html(itemForm.render().$el);
+                    },
+                    error: function () {
+                        console.log('fetch model err');
+                    }
                 });
-
-                itemForm.on('form:submitted', function (attrs) {
-                    //item.set(attrs);
-                    //如果没有wait，会直接修改本地模型
-                    //加了waitture，一定要等到服务端返回的数据模型，才会更新本地数据
-                    item.save(attrs, {
-                        wait: true
-                        ,success: function () {
-                            console.log('edit OK');
-                            router.navigate('items', true);
-                        }
-                    });
-                });
-
-                $('#coreCont').html(itemForm.render().$el);
             } else {
                 router.navigate('items', true);
             }

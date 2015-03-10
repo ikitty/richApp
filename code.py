@@ -37,10 +37,13 @@ class Rich:
 
     #如果urls中有匹配字符，这里必须写形参。否则会报错
     def GET(self, id):
-        ret = []
-        d = DB.get_all()
-        for item in d:
-            ret.append(dict(item))
+        if id:
+            ret = DB.get_by_id(id)
+        else:
+            ret = []
+            d = DB.get_all()
+            for item in d:
+                ret.append(dict(item))
 
         return json.dumps(ret)
 
