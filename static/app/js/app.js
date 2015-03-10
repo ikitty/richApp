@@ -51,6 +51,8 @@ window.AlexMoney = {
 
         this.C = C ;
         C.fetch({
+            //reset all models ，and will trigger reset evt
+            //reset:true,
             success: function (c) {
                 console.log('fetch OK');
                 if (C.isEmpty()) {
@@ -71,19 +73,11 @@ window.AlexMoney = {
         });
 
         router.on('route:showItems', function () {
-            //todo : how to handle async
-            setTimeout(function () {
-                
-            console.log('show data') ;
-            _.each(C.models, function (item) {
-                console.log(item.attributes) ;
-            })
+            console.log('show home data') ;
             var itemsView = new _this.Views.Items({
                 collection: C
             });
             $('#coreCont').html(itemsView.render().$el);
-
-            }, 1000);
         });
 
         router.on('route:newItem', function () {
@@ -97,15 +91,18 @@ window.AlexMoney = {
 
                 //create does not need id
                 //attrs.id = _.max(C.pluck('id')) + 1 ;
+                //  需要刷新，数据更新问题todo
+                //
                 C.create(attrs ,{
+                    wait:true,
                     success: function () {
                         console.log('new item c ok') ;
+                        router.navigate('items', true);
                     },
                     error:function () {
                         console.log('new item c err') ;
                     }
                 });
-                router.navigate('items', true);
             });
 
             $('#coreCont').html(itemForm.render().$el);
@@ -126,8 +123,11 @@ window.AlexMoney = {
                     //加了waitture，一定要等到服务端返回的数据模型，才会更新本地数据
                     item.save(attrs, {
                         wait: true
+                        ,success: function () {
+                            console.log('edit OK');
+                            router.navigate('items', true);
+                        }
                     });
-                    router.navigate('items', true);
                 });
 
                 $('#coreCont').html(itemForm.render().$el);
@@ -141,31 +141,6 @@ window.AlexMoney = {
         });
 
         Backbone.history.start();
-    }
-
-    ,createTestData: function () {
-        _.each([{
-                "type": 'JiJin'
-                ,"time": '2015-03-05'
-                ,"amount": 10000
-                ,"gain": 1600
-            }
-            ,{
-                "type": 'JiJin'
-                ,"time": '2015-03-05'
-                ,"amount": 10000
-                ,"gain": 1700
-            }
-        ], function (model) {
-            this.C.create(model, {
-                success: function () {
-                    console.log('create ok') ;
-                },
-                error: function () {
-                    console.log('create err') ;
-                }
-            } );
-        }, this);
     }
 };
 

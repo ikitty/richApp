@@ -2,6 +2,8 @@ AlexMoney.Views.Items = Backbone.View.extend({
     template: _.template($('#tplAllMoney').html()),
 
     initialize: function () {
+        //fetch 会触发add事件
+        this.listenTo(this.collection, 'add', this.render);
         //this.listenTo(this.collection, 'reset', this.render);
     },
     renderOne: function(model) {
