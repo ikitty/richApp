@@ -109,10 +109,11 @@ window.AlexMoney = {
             var item = C.get(id),
                 itemForm;
 
+            //todo   页面刷新导致无法获取item
             if (item) {
                 //get data from serve
                 item.fetch({
-                    reset: true,
+                    //reset: true,
                     success: function (model, res) {
                         console.log('fetch model ok');
                         itemForm = new _this.Views.ItemForm({
@@ -141,6 +142,7 @@ window.AlexMoney = {
         });
 
         router.on('route:other', function (url) {
+            console.log('not found, jump to home');
             router.navigate('items');
         });
 
